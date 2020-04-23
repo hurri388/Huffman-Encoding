@@ -12,9 +12,12 @@ public:
 	Array_Queue();
 	~Array_Queue();
 	void EnQueue(T input, int frequency);
-	int DeQueue();
+	T DeQueue();
 	void SortAccordingToFrequency();
 	int QueueSize();
+	int getFrequency();
+	T getTop();
+	void show();
 };
 
 template<class T>
@@ -68,11 +71,12 @@ inline void Array_Queue<T>::EnQueue(T input, int frequency)
 		freq[size - 1] = frequency;
 		delete[]temp_array;
 		delete[]temp_freq;
+		SortAccordingToFrequency();
 	}
 }
 
 template<class T>
-inline int Array_Queue<T>::DeQueue()
+inline T Array_Queue<T>::DeQueue()
 {
 	if (size >= 1)
 	{
@@ -99,9 +103,10 @@ inline void Array_Queue<T>::SortAccordingToFrequency()
 					int temp = freq[i];
 					freq[i] = freq[j];
 					freq[j] = temp;
-					temp = array[i];
+					T tempo;
+					tempo = array[i];
 					array[i] = array[j];
-					array[j] = temp;
+					array[j] = tempo;
 				}
 			}
 		}
@@ -112,4 +117,26 @@ template<class T>
 inline int Array_Queue<T>::QueueSize()
 {
 	return size;
+}
+
+template<class T>
+inline int Array_Queue<T>::getFrequency()
+{
+	return freq[size-1];
+}
+
+template<class T>
+inline T Array_Queue<T>::getTop()
+{
+	return array[size-1];
+}
+
+template<class T>
+inline void Array_Queue<T>::show()
+{
+	for (int i = size - 1; i >= 0; i--)
+	{
+		cout << freq[i] << ",";
+	}
+	cout << endl;
 }

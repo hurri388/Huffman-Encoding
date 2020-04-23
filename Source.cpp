@@ -1,7 +1,71 @@
 #include"Queue.h"
 #include"BinaryTree.h"
+#include"Map.h"
 #include<fstream>
 #include<string>
+int InDecimal(string binary)
+{
+	int decimal = 0;
+	int power = binary.length() - 1;
+	for (int i = 0; binary[i] != '\0'; i++, power--)
+	{
+		decimal += pow(2, power) * (binary[i] - '0');
+	}
+	return decimal;
+}
+void SevenBitBlocks(string input, Array_Queue<int>&bitwise_characters)
+{
+	string sevenbits;
+	int count = 1;
+	for (auto i = input.begin(); i != input.end(); i++)
+	{
+		sevenbits += *i;
+		if (count == 7)
+		{
+			bitwise_characters.EnQueue(InDecimal(sevenbits), 1);
+			sevenbits.clear();
+			count = 1;
+			continue;
+		}
+		count++;
+	}
+	if (count != 7)
+	{
+		while (count != 8)
+		{
+			sevenbits += "0";
+			count++;
+		}
+	}
+	bitwise_characters.EnQueue(InDecimal(sevenbits), 1);
+}
+void HuffManDecoding(TreeNode<char>* root, int& i, string encoded, string& decoded)
+{
+
+	if (!root)
+		return;
+	else if (root->left == NULL && root->right == NULL)
+	{
+		decoded += root->data;
+		return;
+	}
+	i++;
+	if (encoded[i] == '0')
+		HuffManDecoding(root->left, i, encoded, decoded);
+	else
+		HuffManDecoding(root->right, i, encoded, decoded);
+}
+void HuffManEncoding(TreeNode<char>* root, map<char, string>&EncodedString, string code)
+{
+	if (!root)
+		return;
+	else if (root->left == NULL && root->right == NULL)
+	{
+		EncodedString.insert(root->data, code);
+	}
+	HuffManEncoding(root->left, EncodedString, code + "0"); 
+	HuffManEncoding(root->right, EncodedString, code + "1");
+}
 void HuffManTree(const string filename)
 {
 	ifstream file(filename);
@@ -40,8 +104,36 @@ void HuffManTree(const string filename)
 		TreeNode<char>* right = array_queue.DeQueue();
 		array_queue.EnQueue(getNode('*', left, right), f1+f2);
 	}
+	string code = "";
 	TreeNode<char>* root = array_queue.DeQueue();
-	print2D(root);
+	map<char, string>huffman_Encoded;
+	HuffManEncoding(root, huffman_Encoded, code);
+	string Entire_Encoded_String;
+	for (auto i = input.begin(); i != input.end(); i++)
+	{
+		for (int j = 0; j != huffman_Encoded.Size(); j++)
+		{
+			if (*i == huffman_Encoded.getFirst(j))
+			{
+				Entire_Encoded_String += huffman_Encoded.getSecond(j);
+				break;
+			}
+		}
+	}
+	Array_Queue<int>bitwise_characters;
+	SevenBitBlocks(Entire_Encoded_String, bitwise_characters);
+	ofstream outfile("encoded.txt");
+	outfile << Entire_Encoded_String;
+	outfile.close();
+	ifstream infile("encoded.txt");
+	int index = -1;
+	string decoded;
+	cout << "Decoding...."<<endl;
+	ofstream ofile("reconstructed.txt");
+	while (index < (int)Entire_Encoded_String.size() - 2)
+		HuffManDecoding(root, index, Entire_Encoded_String, decoded);
+	ofile << decoded;
+	
 }
 int main()
 {
