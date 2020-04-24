@@ -16,3 +16,14 @@ TreeNode<T>* getNode(T data, TreeNode<T>* left, TreeNode<T>* right)
     temp_root->data = data;
 	return temp_root;
 }
+template<class T>
+void Inorder(TreeNode<T>* root)
+{
+	if (!root)
+	{
+		return;
+	}
+	Inorder(root->left);
+	cout << root->data << endl;
+	Inorder(root->right);
+}

@@ -17,7 +17,6 @@ public:
 	int QueueSize();
 	int getFrequency();
 	T getTop();
-	void show();
 };
 
 template<class T>
@@ -131,12 +130,3 @@ inline T Array_Queue<T>::getTop()
 	return array[size-1];
 }
 
-template<class T>
-inline void Array_Queue<T>::show()
-{
-	for (int i = size - 1; i >= 0; i--)
-	{
-		cout << freq[i] << ",";
-	}
-	cout << endl;
-}
